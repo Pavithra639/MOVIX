@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie & TV Insights Dashboard</title>
+    <link rel="stylesheet" href="color.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">📺 MOVIX</div>
+            <div class="nav-links">
+                <a href="#home">HOME</a>
+                <a href="#featured">DISCOVER</a>
+                <a href="#image-search-section">SEARCH</a>
+                <a href="#insights">INSIGHTS</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Dynamic Background -->
+    <section id="hero-section" class="hero">
+        <div class="hero-bg-video"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">MOVIE & TV INSIGHTS</h1>
+            <p class="hero-subtitle">Discover Feel-Good Movies & Shows with Beautiful Data Visualization</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="stat-movies">0</div>
+                    <div class="stat-label">Movies & Shows</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="stat-countries">0</div>
+                    <div class="stat-label">Countries</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="stat-genres">0</div>
+                    <div class="stat-label">Genres</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>SCROLL TO EXPLORE</span>
+        </div>
+    </section>
+
+    <!-- Featured Content Carousel -->
+    <section id="featured" class="featured-section">
+        <h2>FEATURED CONTENT</h2>
+        <div class="carousel-container">
+            <button class="carousel-btn prev" id="prev-btn">&#10094;</button>
+            <div class="carousel" id="carousel">
+                <!-- Movies will be populated by JS -->
+            </div>
+            <button class="carousel-btn next" id="next-btn">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- Image Search Section -->
+    <section id="image-search-section" class="image-search-section">
+        <h2>SEARCH & DISCOVER MOVIE IMAGES</h2>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" id="image-search-input" placeholder="Search for a movie or show...">
+                <div class="autocomplete-list" id="autocomplete-list"></div>
+            </div>
+            <button id="search-btn" class="search-btn">🔍 SEARCH</button>
+        </div>
+        <div class="search-results" id="search-results">
+            <div class="empty-state">Start searching for your favorite movies!</div>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section id="filters-section" class="filters-section">
+        <h2>FILTER & EXPLORE</h2>
+        <div class="filters-container">
+            <div class="filter-group">
+                <label>Release Year</label>
+                <select id="year-filter">
+                    <option value="">All Years</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Country</label>
+                <select id="country-filter">
+                    <option value="">All Countries</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Type</label>
+                <select id="type-filter">
+                    <option value="">All Types</option>
+                    <option value="Movie">Movie</option>
+                    <option value="TV Show">TV Show</option>
+                </select>
+            </div>
+            <div class="filter-group search-group">
+                <input type="text" id="search-input" placeholder="Search titles...">
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Section -->
+    <section id="insights" class="insights-section">
+        <h2>DATA INSIGHTS</h2>
+        
+        <div class="insights-container">
+            <!-- Chart 1: Type Distribution -->
+            <div class="insight-card glass-effect">
+                <div class="card-header">
+                    <h3>📊 Movies vs TV Shows</h3>
+                    <p class="insight-text">Netflix offers a balanced mix of cinematic experiences and episodic storytelling, catering to diverse viewer preferences.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="type-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Rating Distribution -->
+            <div class="insight-card glass-effect">
+                <div class="card-header">
+                    <h3>📋 Content Ratings</h3>
+                    <p class="insight-text">TV-MA content dominates, indicating Netflix's focus on mature audiences with diverse storytelling perspectives.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="rating-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 3: Year Distribution -->
+            <div class="insight-card glass-effect">
+                <div class="card-header">
+                    <h3>📈 Growth Over Time</h3>
+                    <p class="insight-text">Netflix's content library has experienced exponential growth, especially in recent years, demonstrating continuous platform expansion.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="year-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 4: Top Countries -->
+            <div class="insight-card glass-effect wide-card">
+                <div class="card-header">
+                    <h3>🌍 Top Content-Producing Countries</h3>
+                    <p class="insight-text">The United States leads global content production, followed by emerging markets like India and UK, showing Netflix's worldwide investment strategy.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="country-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 5: Genre Distribution -->
+            <div class="insight-card glass-effect wide-card">
+                <div class="card-header">
+                    <h3>🎬 Popular Genres</h3>
+                    <p class="insight-text">Drama and International content are the most prevalent genres, reflecting Netflix's commitment to diverse and culturally rich storytelling.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="genre-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats & Facts Section -->
+    <section class="facts-section glass-effect">
+        <h2>KEY STATISTICS</h2>
+        <div class="facts-grid">
+            <div class="fact-card">
+                <div class="fact-icon">🎭</div>
+                <h4>Most Popular Rating</h4>
+                <p id="popular-rating">—</p>
+                <p class="fact-description" id="popular-rating-desc">Discover the most common content rating</p>
+            </div>
+            <div class="fact-card">
+                <div class="fact-icon">🌟</div>
+                <h4>Most Common Genre</h4>
+                <p id="popular-genre">—</p>
+                <p class="fact-description" id="popular-genre-desc">The top genre in our library</p>
+            </div>
+            <div class="fact-card">
+                <div class="fact-icon">📺</div>
+                <h4>Content Ratio</h4>
+                <p id="content-ratio">—</p>
+                <p class="fact-description" id="content-ratio-desc">Movies vs TV Shows breakdown</p>
+            </div>
+            <div class="fact-card">
+                <div class="fact-icon">🎬</div>
+                <h4>Most Active Year</h4>
+                <p id="active-year">—</p>
+                <p class="fact-description" id="active-year-desc">Year with most content releases</p>
+            </div>
+            <div class="fact-card">
+                <div class="fact-icon">🌍</div>
+                <h4>Top Country</h4>
+                <p id="top-country">—</p>
+                <p class="fact-description" id="top-country-desc">Leading content producer</p>
+            </div>
+            <div class="fact-card">
+                <div class="fact-icon">📊</div>
+                <h4>Total Content</h4>
+                <p id="total-content">—</p>
+                <p class="fact-description" id="total-content-desc">Complete library count</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Netflix Data Insights Dashboard | Built with ❤️ and Data</p>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+</html>
